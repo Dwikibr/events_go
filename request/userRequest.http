@@ -1,0 +1,19 @@
+### Create User Request
+POST  http://localhost:8181/signup
+Content-Type: application/json
+
+{
+  "username": "kusumabriantono9@gmail.com",
+  "password": "example"
+}
+
+<> 2025-01-14T215353.201.json
+
+### Login User Request
+POST http://localhost:8181/login
+Content-Type: application/json
+
+{
+  "username": "kusumabriantono9@gmail.com",
+  "password": "example"
+}

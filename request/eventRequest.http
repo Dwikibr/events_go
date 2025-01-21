@@ -1,0 +1,33 @@
+### Get Events
+GET  http://localhost:8181/events
+content-type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzcxMzQ4MzMsImlkIjo2LCJ1c2VybmFtZSI6Imt1c3VtYWJyaWFudG9ubzZAZ21haWwuY29tIn0.r7cvq2Iqz1x9qbfrcdP9VG4oWwbKj_hYv_N8haEM8_0
+
+### Create Event
+POST http://localhost:8181/auth/events
+content-type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzcxNDM4MjcsImlkIjo3LCJ1c2VybmFtZSI6Imt1c3VtYWJyaWFudG9ubzlAZ21haWwuY29tIn0.icxb53sA7Ph1Idul8W5Aj8POIKGytLLzNsmjAMpmQ4g
+
+{
+  "title": "Test Event Auth5",
+  "description": "A Test Event Auth5",
+  "location": "A Test Location Auth5",
+  "datetime": "2025-01-01T15:30:00.000Z"
+}
+
+### Get Event
+GET http://localhost:8181/events/2
+
+### Update Event
+PUT http://localhost:8181/events/1
+content-type: application/json
+
+{
+  "title": "Test Event Updated Z2",
+  "description": "A Test Event Updated Z2",
+  "location": "A Test Location Updated Z2",
+  "datetime": "2025-01-01T15:30:00.000Z"
+}
+
+### Delete Event
+DELETE http://localhost:8181/events/1

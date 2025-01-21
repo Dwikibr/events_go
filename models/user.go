@@ -4,6 +4,7 @@ import (
 	"RestApi/db"
 	"RestApi/utils"
 	"errors"
+	"fmt"
 )
 
 type User struct {
@@ -45,14 +46,15 @@ func (u *User) ValidateCredential() error {
 	return nil
 }
 
-func ValidateUserId(id int) error {
+func ValidateUserId(id int64) error {
+
 	query := `Select id from users where id = ?`
 	row := db.DB.QueryRow(query, id)
 
 	var userId int
 	err := row.Scan(&userId)
 	if err != nil {
-		return errors.New("Invalid User")
+		return fmt.Errorf("Invalid User: %v params: %v", err, id)
 	}
 	return nil
 }

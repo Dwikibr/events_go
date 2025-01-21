@@ -19,10 +19,12 @@ func AuthenticateUser(context *gin.Context) {
 	if err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong"})
 	}
-
 	context.Set("tokenInfo", tokenInfo)
 	context.Set("currentUser", tokenInfo["username"])
-	context.Set("userId", tokenInfo["id"])
+
+	idFloat := tokenInfo["id"].(float64)
+	userId := int64(idFloat)
+	context.Set("userId", userId)
 	context.Next()
 }
 

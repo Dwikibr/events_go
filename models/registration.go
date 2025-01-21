@@ -19,7 +19,7 @@ func CreateRegistration(UserId, EventID int64) *Registration {
 }
 
 func (regis *Registration) Validate() error {
-	err := ValidateUserId(int(regis.UserID))
+	err := ValidateUserId(regis.UserID)
 	if err != nil {
 		return err
 	}
@@ -34,12 +34,12 @@ func (regis *Registration) Save() error {
 	query := `Insert into registrations (user_id, event_id) values (?, ?)`
 	res, err := db.DB.Exec(query, regis.UserID, regis.EventID)
 	if err != nil {
-		return errors.New("Failed to Save Registration")
+		return errors.New("failed to Save Registration")
 	}
 
 	regis.ID, err = res.LastInsertId()
 	if err != nil {
-		return errors.New("Failed to Save Registration")
+		return errors.New("failed to Save Registration")
 	}
 	return nil
 }
@@ -48,7 +48,7 @@ func (regis *Registration) Cancel() error {
 	query := `Delete from registrations where id = ?`
 	_, err := db.DB.Exec(query, regis.ID)
 	if err != nil {
-		return errors.New("Failed to Cancel Registration")
+		return errors.New("failed to Cancel Registration")
 	}
 	return nil
 }

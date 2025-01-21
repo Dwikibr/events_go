@@ -3,7 +3,6 @@ package routes
 import (
 	"RestApi/models"
 	"RestApi/utils"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,9 +10,7 @@ import (
 func RegisterEvent(context *gin.Context) {
 	userId := context.GetInt64("userId")
 	eventId := utils.ParseStrIdToInt64(context, "id")
-	fmt.Println(userId, eventId)
 	registration := models.CreateRegistration(userId, eventId)
-	fmt.Println(registration.UserID, registration.EventID)
 	err := registration.Validate()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})

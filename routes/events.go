@@ -54,11 +54,10 @@ func getEvent(context *gin.Context) {
 
 func updateEvent(context *gin.Context) {
 	eventID := utils.ParseStrIdToInt64(context, "id")
-	event, err := models.GetEventById(eventID)
 
-	err = context.ShouldBindJSON(&event)
+	event, err := models.GetEventById(eventID)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("Event with ID %d not found", eventID)})
 		return
 	}
 
@@ -68,7 +67,13 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	err = event.Update(eventID)
+	err = context.ShouldBindJSON(&event)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = event.Update()
 	if err != nil {
 		fmt.Println(err)
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to Update Event"})
@@ -91,7 +96,7 @@ func deleteEvent(context *gin.Context) {
 		return
 	}
 
-	err = event.Delete(eventID)
+	err = event.Delete()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to Delete Event"})
 		return

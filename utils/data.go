@@ -12,6 +12,7 @@ func ParseStrIdToInt64(context *gin.Context, param string) int64 {
 	parsedInt, err := strconv.ParseInt(context.Param(param), 10, 64)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		panic(err)
 	}
 	return parsedInt
 }

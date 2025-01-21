@@ -2,17 +2,20 @@ package models
 
 import (
 	"RestApi/db"
+	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 )
 
 type Event struct {
-	ID          int64     `json:"id"`
-	Title       string    `json:"title" binding:"required"`
-	Description string    `json:"description" binding:"required"`
-	Location    string    `json:"location" binding:"required"`
-	Datetime    time.Time `json:"datetime" binding:"required"`
-	UserID      int       `json:"user_id"`
+	ID           int64     `json:"id"`
+	Title        string    `json:"title" binding:"required"`
+	Description  string    `json:"description" binding:"required"`
+	Location     string    `json:"location" binding:"required"`
+	Datetime     time.Time `json:"datetime" binding:"required"`
+	UserID       int       `json:"user_id"`
+	Registration []int64   `json:"registration"`
 }
 
 func (e *Event) Save() error {
@@ -26,7 +29,12 @@ func (e *Event) Save() error {
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+
+	defer func(stmt *sql.Stmt) {
+		if err := stmt.Close(); err != nil {
+			fmt.Printf("Error closing statement: %v\n", err)
+		}
+	}(stmt)
 
 	result, err := stmt.Exec(e.Title, e.Description, e.Location, e.Datetime, e.UserID)
 	if err != nil {
@@ -43,7 +51,12 @@ func GetAllEvents() ([]Event, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			fmt.Printf("Error closing rows: %v\n", err)
+		}
+	}(rows)
 
 	var events []Event
 	for rows.Next() {
@@ -70,22 +83,22 @@ func GetEventById(id int64) (*Event, error) {
 	return &event, nil
 }
 
-func (e *Event) Update(id int64) error {
+func (e *Event) Update() error {
 	query := `
 		Update events
 		Set name = ?, description = ?, location = ?, dateTime = ?
 		Where id = ?
 	`
-	_, err := db.DB.Exec(query, e.Title, e.Description, e.Location, e.Datetime, id)
+	_, err := db.DB.Exec(query, e.Title, e.Description, e.Location, e.Datetime, e.ID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (e *Event) Delete(id int64) error {
+func (e *Event) Delete() error {
 	query := "Delete from events where id = ?"
-	_, err := db.DB.Exec(query, id)
+	_, err := db.DB.Exec(query, e.ID)
 	if err != nil {
 		return err
 	}
@@ -104,19 +117,19 @@ func ValidateEventId(id int64) error {
 	return nil
 }
 
-func GetAllEventRegister(eventId int64) ([]int64, error) {
+func _(eventId int64) ([]int64, error) {
 	var allRegistration []int64
 	query := `Select user from registrations where event_id = ?`
 	res, err := db.DB.Query(query, eventId)
 	if err != nil {
-		return allRegistration, errors.New("Failed to get all registrations")
+		return allRegistration, errors.New("failed to get all registrations")
 	}
 
 	for res.Next() {
 		var id int64
 		scanErr := res.Scan(&id)
 		if scanErr != nil {
-			return allRegistration, errors.New("Failed to scan registration")
+			return allRegistration, errors.New("failed to scan registration")
 		}
 		allRegistration = append(allRegistration, id)
 	}

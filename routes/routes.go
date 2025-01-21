@@ -6,7 +6,7 @@ import (
 )
 
 func SetRoutes(server *gin.Engine) {
-	authenticated := server.Group("/auth")
+	authenticated := server.Group("/")
 	authenticated.Use(middleware.AuthenticateUser)
 	authenticated.POST("/events", createEvent)
 	authenticated.PUT("/events/:id", updateEvent)

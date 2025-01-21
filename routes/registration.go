@@ -9,9 +9,8 @@ import (
 
 func RegisterEvent(context *gin.Context) {
 	userId := context.GetInt64("userId")
-	eventId := context.Param("id")
-
-	registration := models.CreateRegistration(userId, utils.ParseStrIdToInt64(context, eventId))
+	eventId := utils.ParseStrIdToInt64(context, "id")
+	registration := models.CreateRegistration(userId, eventId)
 	err := registration.Validate()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})

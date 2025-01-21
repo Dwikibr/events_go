@@ -1,22 +1,22 @@
 ### Get Events
 GET  http://localhost:8181/events
 content-type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzcxMzQ4MzMsImlkIjo2LCJ1c2VybmFtZSI6Imt1c3VtYWJyaWFudG9ubzZAZ21haWwuY29tIn0.r7cvq2Iqz1x9qbfrcdP9VG4oWwbKj_hYv_N8haEM8_0
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc0NDgzMjQsImlkIjoxLCJ1c2VybmFtZSI6Imt1c3VtYWJyaWFudG9ubzlAZ21haWwuY29tIn0.omJnu09eRs3sg4EXfZManpPlvitY6rIgvfShkEi06F8
 
 ### Create Event
 POST http://localhost:8181/auth/events
 content-type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzcxNDM4MjcsImlkIjo3LCJ1c2VybmFtZSI6Imt1c3VtYWJyaWFudG9ubzlAZ21haWwuY29tIn0.icxb53sA7Ph1Idul8W5Aj8POIKGytLLzNsmjAMpmQ4g
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc0NDgzMjQsImlkIjoxLCJ1c2VybmFtZSI6Imt1c3VtYWJyaWFudG9ubzlAZ21haWwuY29tIn0.omJnu09eRs3sg4EXfZManpPlvitY6rIgvfShkEi06F8
 
 {
-  "title": "Test Event Auth5",
-  "description": "A Test Event Auth5",
-  "location": "A Test Location Auth5",
+  "title": "Test Event 2",
+  "description": "A Test Event 2",
+  "location": "A Test Location 2",
   "datetime": "2025-01-01T15:30:00.000Z"
 }
 
 ### Get Event
-GET http://localhost:8181/events/2
+GET http://localhost:8181/events/1
 
 ### Update Event
 PUT http://localhost:8181/events/1

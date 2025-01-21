@@ -117,9 +117,9 @@ func ValidateEventId(id int64) error {
 	return nil
 }
 
-func _(eventId int64) ([]int64, error) {
+func GetEventWithRegistration(eventId int64) ([]int64, error) {
 	var allRegistration []int64
-	query := `Select user from registrations where event_id = ?`
+	query := ``
 	res, err := db.DB.Query(query, eventId)
 	if err != nil {
 		return allRegistration, errors.New("failed to get all registrations")

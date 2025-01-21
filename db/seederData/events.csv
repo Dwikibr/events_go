@@ -1,0 +1,31 @@
+Name,Description,Location,Datetime,UserID
+Go Conference,A conference about Go programming,New York,2025-01-22T15:04:05Z,1
+Hackathon,A 24-hour coding competition,San Francisco,2025-01-23T15:04:05Z,2
+Tech Meetup,Monthly tech meetup,Seattle,2025-01-24T15:04:05Z,3
+AI Summit,A summit on AI advancements,Boston,2025-01-25T15:04:05Z,4
+Cloud Expo,Exhibition on cloud technologies,Chicago,2025-01-26T15:04:05Z,5
+DevOps Days,Conference on DevOps practices,Austin,2025-01-27T15:04:05Z,6
+Cybersecurity Forum,Forum on cybersecurity trends,Washington,2025-01-28T15:04:05Z,7
+Blockchain Conference,Conference on blockchain technology,Miami,2025-01-29T15:04:05Z,8
+IoT World,Event on Internet of Things,Las Vegas,2025-01-30T15:04:05Z,9
+Big Data Summit,Summit on big data analytics,San Jose,2025-01-31T15:04:05Z,10
+Mobile World Congress,Congress on mobile technologies,Barcelona,2025-02-01T15:04:05Z,1
+Web Development Conference,Conference on web development,Los Angeles,2025-02-02T15:04:05Z,2
+AR/VR Expo,Exhibition on AR/VR technologies,Orlando,2025-02-03T15:04:05Z,3
+FinTech Summit,Summit on financial technologies,London,2025-02-04T15:04:05Z,4
+E-commerce Expo,Exhibition on e-commerce,Berlin,2025-02-05T15:04:05Z,5
+Gaming Convention,Convention for gaming enthusiasts,Tokyo,2025-02-06T15:04:05Z,6
+HealthTech Conference,Conference on health technologies,Toronto,2025-02-07T15:04:05Z,7
+EdTech Summit,Summit on educational technologies,Sydney,2025-02-08T15:04:05Z,8
+GreenTech Expo,Exhibition on green technologies,Amsterdam,2025-02-09T15:04:05Z,9
+Robotics Conference,Conference on robotics,Seoul,2025-02-10T15:04:05Z,10
+Quantum Computing Summit,Summit on quantum computing,Zurich,2025-02-11T15:04:05Z,1
+SpaceTech Expo,Exhibition on space technologies,Houston,2025-02-12T15:04:05Z,2
+Smart Cities Conference,Conference on smart city solutions,Dubai,2025-02-13T15:04:05Z,3
+Wearable Tech Expo,Exhibition on wearable technologies,Paris,2025-02-14T15:04:05Z,4
+Digital Marketing Summit,Summit on digital marketing,New Delhi,2025-02-15T15:04:05Z,5
+Startup Conference,Conference for startups,Silicon Valley,2025-02-16T15:04:05Z,6
+Tech Leadership Summit,Summit for tech leaders,Singapore,2025-02-17T15:04:05Z,7
+Women in Tech Conference,Conference for women in tech,Melbourne,2025-02-18T15:04:05Z,8
+Open Source Summit,Summit on open source technologies,Vancouver,2025-02-19T15:04:05Z,9
+AI & ML Conference,Conference on AI and ML,Beijing,2025-02-20T15:04:05Z,10

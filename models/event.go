@@ -9,14 +9,16 @@ import (
 )
 
 type Event struct {
-	ID           int64     `json:"id"`
-	Title        string    `json:"title" binding:"required"`
-	Description  string    `json:"description" binding:"required"`
-	Location     string    `json:"location" binding:"required"`
-	Datetime     time.Time `json:"datetime" binding:"required"`
-	UserID       int       `json:"user_id"`
-	Registration []int64   `json:"registration"`
+	ID           int64                `json:"id"`
+	Title        string               `json:"title" binding:"required"`
+	Description  string               `json:"description" binding:"required"`
+	Location     string               `json:"location" binding:"required"`
+	Datetime     time.Time            `json:"datetime" binding:"required"`
+	UserID       int                  `json:"user_id"`
+	Registration []registrationFormat `json:"registration"`
 }
+
+type registrationFormat map[string]interface{}
 
 func (e *Event) Save() error {
 	query := `
@@ -117,22 +119,61 @@ func ValidateEventId(id int64) error {
 	return nil
 }
 
-func GetEventWithRegistration(eventId int64) ([]int64, error) {
-	var allRegistration []int64
-	query := ``
-	res, err := db.DB.Query(query, eventId)
+func GetEventWithRegistration(eventId int64) (*Event, error) {
+	var allRegistration []registrationFormat
+	var event *Event
+	query := `
+		SELECT e.id, e.name, e.description, e.location, e.datetime, e.user_id,
+		       r.user_id AS registration_user_id, 
+		       r.registration_date AS registration_date
+		FROM events e
+		LEFT JOIN registrations r ON e.id = r.event_id
+		WHERE e.id = ?
+		`
+
+	rows, err := db.DB.Query(query, eventId)
 	if err != nil {
-		return allRegistration, errors.New("failed to get all registrations")
+		return nil, fmt.Errorf("error getting event with registration: %v", err)
 	}
 
-	for res.Next() {
-		var id int64
-		scanErr := res.Scan(&id)
-		if scanErr != nil {
-			return allRegistration, errors.New("failed to scan registration")
+	for rows.Next() {
+		var (
+			eventId, ownerId            int64
+			name, description, location string
+			eventTime                   time.Time
+			registerUsr                 sql.NullInt64
+			registerDate                sql.NullTime
+		)
+
+		err = rows.Scan(&eventId, &name, &description, &location, &eventTime, &ownerId, &registerUsr, &registerDate)
+		if err != nil {
+			panic(err)
 		}
-		allRegistration = append(allRegistration, id)
+
+		if event == nil {
+			event = &Event{
+				ID:           eventId,
+				Title:        name,
+				Description:  description,
+				Location:     location,
+				Datetime:     eventTime,
+				UserID:       int(ownerId),
+				Registration: allRegistration,
+			}
+		}
+
+		if registerUsr.Valid && registerDate.Valid {
+			allRegistration = append(allRegistration, registrationFormat{
+				"user_id":       registerUsr.Int64,
+				"register_date": registerDate.Time,
+			})
+		}
 	}
 
-	return allRegistration, nil
+	if event == nil {
+		return nil, errors.New("event not found")
+	}
+
+	event.Registration = allRegistration
+	return event, nil
 }

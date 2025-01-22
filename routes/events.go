@@ -103,3 +103,13 @@ func deleteEvent(context *gin.Context) {
 	}
 	context.JSON(http.StatusOK, gin.H{"message": "Event Deleted"})
 }
+
+func GetEventDetail(context *gin.Context) {
+	eventId := utils.ParseStrIdToInt64(context, "id")
+	event, err := models.GetEventWithRegistration(eventId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("Event with ID %d not found", eventId), "error": err.Error()})
+		return
+	}
+	context.JSON(http.StatusOK, event)
+}

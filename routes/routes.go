@@ -18,4 +18,5 @@ func SetRoutes(server *gin.Engine) {
 	server.GET("/events/:id", getEvent)
 	server.POST("/signup", SignUp)
 	server.POST("/login", Login)
+	server.GET("/event/:id/detail", GetEventDetail)
 }

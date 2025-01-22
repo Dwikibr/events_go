@@ -3,28 +3,30 @@ package models
 import (
 	"RestApi/db"
 	"database/sql"
-	"errors"
 	"fmt"
 	"time"
 )
 
+// Event represents an event with its details and registrations.
 type Event struct {
-	ID           int64     `json:"id"`
-	Title        string    `json:"title" binding:"required"`
-	Description  string    `json:"description" binding:"required"`
-	Location     string    `json:"location" binding:"required"`
-	Datetime     time.Time `json:"datetime" binding:"required"`
-	UserID       int       `json:"user_id"`
-	Registration []int64   `json:"registration"`
+	ID           int64                `json:"id"`
+	Title        string               `json:"title" binding:"required"`
+	Description  string               `json:"description" binding:"required"`
+	Location     string               `json:"location" binding:"required"`
+	Datetime     time.Time            `json:"datetime" binding:"required"`
+	UserID       int                  `json:"user_id"`
+	Registration []registrationFormat `json:"registration"`
 }
 
+// registrationFormat represents the format of a registration.
+type registrationFormat map[string]interface{}
+
+// Save inserts a new event into the database.
 func (e *Event) Save() error {
 	query := `
 		INSERT INTO events (name, description, location, dateTime, user_id)
 		VALUES (?, ?, ?, ?, ?)
 	`
-	//db.DB.Exec(query, e.Title, e.Description, e.Location, e.Datetime, e.UserID)
-	//db.DB.Query(query, e.Title, e.Description, e.Location, e.Datetime, e.UserID)
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
 		return err
@@ -45,6 +47,7 @@ func (e *Event) Save() error {
 	return err
 }
 
+// GetAllEvents retrieves all events from the database.
 func GetAllEvents() ([]Event, error) {
 	query := "SELECT * FROM events"
 	rows, err := db.DB.Query(query)
@@ -71,6 +74,7 @@ func GetAllEvents() ([]Event, error) {
 	return events, nil
 }
 
+// GetEventById retrieves an event by its ID from the database.
 func GetEventById(id int64) (*Event, error) {
 	query := "Select * from events where id = ?"
 	row := db.DB.QueryRow(query, id)
@@ -83,6 +87,7 @@ func GetEventById(id int64) (*Event, error) {
 	return &event, nil
 }
 
+// Update modifies an existing event in the database.
 func (e *Event) Update() error {
 	query := `
 		Update events
@@ -96,6 +101,7 @@ func (e *Event) Update() error {
 	return nil
 }
 
+// Delete removes an event from the database.
 func (e *Event) Delete() error {
 	query := "Delete from events where id = ?"
 	_, err := db.DB.Exec(query, e.ID)
@@ -105,6 +111,7 @@ func (e *Event) Delete() error {
 	return nil
 }
 
+// ValidateEventId checks if an event ID exists in the database.
 func ValidateEventId(id int64) error {
 	query := `Select id from events where id = ?`
 	row := db.DB.QueryRow(query, id)
@@ -117,22 +124,45 @@ func ValidateEventId(id int64) error {
 	return nil
 }
 
-func GetEventWithRegistration(eventId int64) ([]int64, error) {
-	var allRegistration []int64
-	query := ``
-	res, err := db.DB.Query(query, eventId)
+// GetEventWithRegistration retrieves an event along with its registrations from the database.
+func (e *Event) GetEventWithRegistration() error {
+	var allRegistration []registrationFormat
+	query := `
+		SELECT e.id, e.name, e.description, e.location, e.datetime, e.user_id,
+		       r.user_id AS registration_user_id, 
+		       r.registration_date AS registration_date
+		FROM events e
+		LEFT JOIN registrations r ON e.id = r.event_id
+		WHERE e.id = ?
+		`
+
+	rows, err := db.DB.Query(query, e.ID)
 	if err != nil {
-		return allRegistration, errors.New("failed to get all registrations")
+		return fmt.Errorf("error getting event with registration: %v", err)
 	}
 
-	for res.Next() {
-		var id int64
-		scanErr := res.Scan(&id)
-		if scanErr != nil {
-			return allRegistration, errors.New("failed to scan registration")
+	for rows.Next() {
+		var (
+			eventId, ownerId            int64
+			name, description, location string
+			eventTime                   time.Time
+			registerUsr                 sql.NullInt64
+			registerDate                sql.NullTime
+		)
+
+		err = rows.Scan(&eventId, &name, &description, &location, &eventTime, &ownerId, &registerUsr, &registerDate)
+		if err != nil {
+			panic(err)
 		}
-		allRegistration = append(allRegistration, id)
+
+		if registerUsr.Valid && registerDate.Valid {
+			allRegistration = append(allRegistration, registrationFormat{
+				"user_id":       registerUsr.Int64,
+				"register_date": registerDate.Time,
+			})
+		}
 	}
 
-	return allRegistration, nil
+	e.Registration = allRegistration
+	return nil
 }

@@ -25,8 +25,9 @@ type user struct {
 }
 
 type registration struct {
-	EventID int
-	UserID  int
+	EventID          int
+	UserID           int
+	RegistrationDate time.Time
 }
 
 func SeedDB() {
@@ -125,21 +126,28 @@ func readRegistrations(filePath string) []registration {
 			fmt.Printf("Error parsing UserID: %v\n", err)
 			return nil
 		}
+
+		datetime, err := time.Parse("2006-01-02T15:04:05Z", row["RegisDate"].(string))
+		if err != nil {
+			fmt.Printf("Error parsing datetime: %v\n", err)
+			return nil
+		}
 		registrations = append(registrations, registration{
-			EventID: int(eid),
-			UserID:  int(uid),
+			EventID:          int(eid),
+			UserID:           int(uid),
+			RegistrationDate: datetime,
 		})
 	}
 	return registrations
 }
 
 func insertRegistrations(registrations []registration) {
-	query := `INSERT INTO registrations (event_id, user_id) VALUES`
+	query := `INSERT INTO registrations (event_id, user_id, registration_date) VALUES`
 	var placeholders []string
 	var values []interface{}
 	for _, regis := range registrations {
-		placeholders = append(placeholders, "(?, ?)")
-		values = append(values, regis.EventID, regis.UserID)
+		placeholders = append(placeholders, "(?, ?, ?)")
+		values = append(values, regis.EventID, regis.UserID, regis.RegistrationDate)
 	}
 	finalQuery := query + strings.Join(placeholders, ",")
 	if _, err := DB.Exec(finalQuery, values...); err != nil {

@@ -3,12 +3,14 @@ package models
 import (
 	"RestApi/db"
 	"errors"
+	"time"
 )
 
 type Registration struct {
-	ID      int64 `json:"id"`
-	UserID  int64 `json:"user_id"`
-	EventID int64 `json:"event_id"`
+	ID               int64     `json:"id"`
+	UserID           int64     `json:"user_id"`
+	EventID          int64     `json:"event_id"`
+	RegistrationDate time.Time `json:"registration_date"`
 }
 
 func CreateRegistration(UserId, EventID int64) *Registration {
@@ -31,8 +33,9 @@ func (regis *Registration) Validate() error {
 }
 
 func (regis *Registration) Save() error {
-	query := `Insert into registrations (user_id, event_id) values (?, ?)`
-	res, err := db.DB.Exec(query, regis.UserID, regis.EventID)
+	query := `Insert into registrations (user_id, event_id, registration_date) values (?, ?, ?)`
+	currentTime := time.Now()
+	res, err := db.DB.Exec(query, regis.UserID, regis.EventID, currentTime)
 	if err != nil {
 		return errors.New("failed to Save Registration")
 	}

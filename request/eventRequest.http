@@ -31,3 +31,7 @@ content-type: application/json
 
 ### Delete Event
 DELETE http://localhost:8181/events/1
+
+### Get Event Detail
+GET http://localhost:8181/event/1/detail
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc1MjI0NjgsImlkIjoxLCJ1c2VybmFtZSI6InVzZXIxIn0.ZV4Eyw2g5ArkQlZh_lK3wyDV0peThzEO90YuiDYyWFc

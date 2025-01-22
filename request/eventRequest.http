@@ -31,3 +31,6 @@ content-type: application/json
 
 ### Delete Event
 DELETE http://localhost:8181/events/1
+
+### Get Event Detail
+GET http://localhost:8181/event/1/detail

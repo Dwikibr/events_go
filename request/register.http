@@ -1,4 +1,4 @@
 ### Register Events
-POST  http://localhost:8181/events/1/register
+POST  http://localhost:8181/events/5/register
 content-type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc0NDkwNjYsImlkIjoyLCJ1c2VybmFtZSI6Imt1c3VtYWJyaWFudG9ubzhAZ21haWwuY29tIn0.j05SZVD8Z8SEyz8DIxNkNkkzZ7PmJbuWFmidliThAb0
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc0ODExNDYsImlkIjoxLCJ1c2VybmFtZSI6InVzZXIxIn0.9csmEl-WpNbzbEGFKqo1sq_ROUr8w3kRgybfJGZnFG0

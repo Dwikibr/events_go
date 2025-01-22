@@ -61,7 +61,7 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	currSession := context.GetInt("id")
+	currSession := context.GetInt("userId")
 	if currSession != event.UserID {
 		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 		return
@@ -91,7 +91,7 @@ func deleteEvent(context *gin.Context) {
 		return
 	}
 
-	if context.GetInt("id") != event.UserID {
+	if context.GetInt("userId") != event.UserID {
 		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 		return
 	}
@@ -106,7 +106,20 @@ func deleteEvent(context *gin.Context) {
 
 func GetEventDetail(context *gin.Context) {
 	eventId := utils.ParseStrIdToInt64(context, "id")
-	event, err := models.GetEventWithRegistration(eventId)
+	event, err := models.GetEventById(eventId)
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"message": fmt.Sprintf("event with id %v not found", eventId)})
+		return
+	}
+
+	curSession := context.GetInt("userId")
+	fmt.Printf("Session: %v OwnerId: %v", curSession, event.UserID)
+	if event.UserID != curSession {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized to get event detail"})
+		return
+	}
+
+	err = event.GetEventWithRegistration()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("Event with ID %d not found", eventId), "error": err.Error()})
 		return

@@ -13,10 +13,10 @@ func SetRoutes(server *gin.Engine) {
 	authenticated.DELETE("/events/:id", deleteEvent)
 	authenticated.POST("/events/:id/register", RegisterEvent)
 	authenticated.DELETE("/events/:id/cancel-register", CancelRegistration)
+	authenticated.GET("/event/:id/detail", GetEventDetail)
 
 	server.GET("/events", getEvents)
 	server.GET("/events/:id", getEvent)
 	server.POST("/signup", SignUp)
 	server.POST("/login", Login)
-	server.GET("/event/:id/detail", GetEventDetail)
 }

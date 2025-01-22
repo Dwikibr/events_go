@@ -23,7 +23,7 @@ func AuthenticateUser(context *gin.Context) {
 	context.Set("currentUser", tokenInfo["username"])
 
 	idFloat := tokenInfo["id"].(float64)
-	userId := int64(idFloat)
+	userId := int(idFloat)
 	context.Set("userId", userId)
 	context.Next()
 }

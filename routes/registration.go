@@ -8,9 +8,9 @@ import (
 )
 
 func RegisterEvent(context *gin.Context) {
-	userId := context.GetInt64("userId")
+	userId := context.GetInt("userId")
 	eventId := utils.ParseStrIdToInt64(context, "id")
-	registration := models.CreateRegistration(userId, eventId)
+	registration := models.CreateRegistration(int64(userId), eventId)
 	err := registration.Validate()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
@@ -26,10 +26,10 @@ func RegisterEvent(context *gin.Context) {
 }
 
 func CancelRegistration(context *gin.Context) {
-	userId := context.GetInt64("userId")
+	userId := context.GetInt("userId")
 	eventId := context.Param("id")
 
-	registration := models.CreateRegistration(userId, utils.ParseStrIdToInt64(context, eventId))
+	registration := models.CreateRegistration(int64(userId), utils.ParseStrIdToInt64(context, eventId))
 	err := registration.Validate()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})

@@ -3,7 +3,6 @@ package models
 import (
 	"RestApi/db"
 	"database/sql"
-	"errors"
 	"fmt"
 	"time"
 )
@@ -119,9 +118,8 @@ func ValidateEventId(id int64) error {
 	return nil
 }
 
-func GetEventWithRegistration(eventId int64) (*Event, error) {
+func (e *Event) GetEventWithRegistration() error {
 	var allRegistration []registrationFormat
-	var event *Event
 	query := `
 		SELECT e.id, e.name, e.description, e.location, e.datetime, e.user_id,
 		       r.user_id AS registration_user_id, 
@@ -131,9 +129,9 @@ func GetEventWithRegistration(eventId int64) (*Event, error) {
 		WHERE e.id = ?
 		`
 
-	rows, err := db.DB.Query(query, eventId)
+	rows, err := db.DB.Query(query, e.ID)
 	if err != nil {
-		return nil, fmt.Errorf("error getting event with registration: %v", err)
+		return fmt.Errorf("error getting event with registration: %v", err)
 	}
 
 	for rows.Next() {
@@ -150,18 +148,6 @@ func GetEventWithRegistration(eventId int64) (*Event, error) {
 			panic(err)
 		}
 
-		if event == nil {
-			event = &Event{
-				ID:           eventId,
-				Title:        name,
-				Description:  description,
-				Location:     location,
-				Datetime:     eventTime,
-				UserID:       int(ownerId),
-				Registration: allRegistration,
-			}
-		}
-
 		if registerUsr.Valid && registerDate.Valid {
 			allRegistration = append(allRegistration, registrationFormat{
 				"user_id":       registerUsr.Int64,
@@ -170,10 +156,6 @@ func GetEventWithRegistration(eventId int64) (*Event, error) {
 		}
 	}
 
-	if event == nil {
-		return nil, errors.New("event not found")
-	}
-
-	event.Registration = allRegistration
-	return event, nil
+	e.Registration = allRegistration
+	return nil
 }
